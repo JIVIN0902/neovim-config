@@ -20,17 +20,23 @@ Plug 'cespare/vim-toml'
 Plug 'rust-lang/rls'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'morhetz/gruvbox'
+Plug 'frazrepo/vim-rainbow'
 "" Using Vim-Plug
-
+Plug 'joshdick/onedark.vim'
 Plug 'HerringtonDarkholme/yats.vim' " TS Syntax
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+
+
 Plug 'cespare/vim-toml'
 Plug 'dense-analysis/ale'
 Plug 'mattn/emmet-vim'
 Plug 'tomlion/vim-solidity'
 
 " Snippets
-Plug 'SirVer/ultisnips'
-Plug 'mlaursen/vim-react-snippets'
+"Plug 'SirVer/ultisnips'
+"Plug 'mlaursen/vim-react-snippets'
+Plug 'dsznajder/vscode-es7-javascript-react-snippets', { 'do': 'yarn install --frozen-lockfile && yarn compile' }
+
 
 " Ultisnips
 Plug 'ryanoasis/vim-devicons'
@@ -39,6 +45,25 @@ Plug 'ThePrimeagen/vim-be-good'
 " Initialize plugin system
 call plug#end()
 
+
+
+let g:transparent_enabled = v:true
+
+
+let g:tagalong_verbose = 1
+
+" Rainbow brackets
+let g:rainbow_active = 1
+let g:rainbow_load_separately = [
+    \ [ '*' , [['(', ')'], ['\[', '\]'], ['{', '}']] ],
+    \ [ '*.tex' , [['(', ')'], ['\[', '\]']] ],
+    \ [ '*.cpp' , [['(', ')'], ['\[', '\]'], ['{', '}']] ],
+    \ [ '*.{html,htm}' , [['(', ')'], ['\[', '\]'], ['{', '}'], ['<\a[^>]*>', '</[^>]*>']] ],
+    \ ]
+
+let g:rainbow_guifgs = ['RoyalBlue3', 'DarkOrange3', 'DarkOrchid3', 'FireBrick']
+let g:rainbow_ctermfgs = ['lightblue', 'lightgreen', 'yellow', 'red', 'magenta']
+
 " Trigger configuration (Optional)
 let g:UltiSnipsExpandTrigger="<C-l>"
 
@@ -46,6 +71,8 @@ inoremap jk <ESC>
 nmap <C-n> :NERDTreeToggle<CR>
 vmap ++ <plug>NERDCommenterToggle
 nmap ++ <plug>NERDCommenterToggle
+
+autocmd BufEnter *.png,*.jpg,*gif exec "! ~/.iterm2/imgcat ".expand("%") | :bw
 
 
 " rust format on save
@@ -75,15 +102,15 @@ let g:airline_theme = 'powerlineish'
 set showtabline=2
 
 
+
 " filenames like *.xml, *.html, *.xhtml, ...
 " These are the file extensions where this plugin is enabled.
 "
-let g:closetag_filenames = '*.html,*.xhtml,*.phtml'
-
+let g:closetag_filenames = '*.html,*.jsx,*.tsx'
 " filenames like *.xml, *.xhtml, ...
 " This will make the list of non-closing tags self-closing in the specified files.
 "
-let g:closetag_xhtml_filenames = '*.xhtml,*.jsx,*.tsx'
+let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
 
 " filetypes like xml, html, xhtml, ...
 " These are the file types where this plugin is enabled.
@@ -93,7 +120,12 @@ let g:closetag_filetypes = 'html,xhtml,phtml'
 " filetypes like xml, xhtml, ...
 " This will make the list of non-closing tags self-closing in the specified files.
 "
-let g:closetag_xhtml_filetypes = 'xhtml,jsx,tsx'
+let g:closetag_xhtml_filetypes = 'xhtml,jsx'
+
+let g:closetag_regions =  {
+\ 'typescript.tsx': 'jsxRegion,tsxRegion',
+\ 'javascript.jsx': 'jsxRegion',
+\ }
 
 " integer value [0|1]
 " This will make the list of non-closing tags case-sensitive (e.g. `<Link>` will be closed while `<link>` won't.)
@@ -153,6 +185,7 @@ let g:NERDTreeGitStatusWithFlags = 1
 
 
 let g:NERDTreeIgnore = ['^node_modules$']
+au VimEnter *  NERDTree
 
 " vim-prettier
 "let g:prettier#quickfix_enabled = 0
@@ -180,8 +213,16 @@ set shiftwidth=2
 " always uses spaces instead of tab characters
 set expandtab
 
-set background=dark
-let g:gruvbox_contrast_dark='hard'
+" Workaround for creating transparent bg
+autocmd SourcePost * highlight Normal     ctermbg=NONE guibg=NONE
+        \ |    highlight LineNr     ctermbg=NONE guibg=NONE
+        \ |    highlight SignColumn ctermbg=NONE guibg=NONE
+
+"set background=transparent
+highlight Normal ctermbg=none
+highlight NonText ctermbg=none
+let g:gruvbox_contrast_dark='dark'
+let g:gruvbox_transparent_bg=1
 colorscheme gruvbox
 highlight Comment cterm=italic gui=italic
 
@@ -215,6 +256,8 @@ let g:coc_global_extensions = [
 " from readme
 " if hidden is not set, TextEdit might fail.
 set hidden " Some servers have issues with backup files, see #649 set nobackup set nowritebackup " Better display for messages set cmdheight=2 " You will have bad experience for diagnostic messages when it's default 4000.
+set backspace=indent,eol,start
+filetype plugin indent on
 set updatetime=300
 
 " don't give |ins-completion-menu| messages.
